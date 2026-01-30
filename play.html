@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jouer - ChessPoney</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75'>♟</text></svg>">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #1a1f2e 0%, #16213e 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #ecf0f1;
+        }
+        
+        .navbar {
+            max-width: 1400px;
+            margin: 0 auto 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .navbar-logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .navbar-nav {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+        
+        .navbar a {
+            color: #bdc3c7;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            padding: 8px 12px;
+            border-radius: 6px;
+        }
+        
+        .navbar a:hover {
+            color: white;
+            background: rgba(52, 152, 219, 0.2);
+        }
+        
+        .navbar-right {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        
+        .auth-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+        }
+        
+        .auth-btn-login {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        }
+        
+        .auth-btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        }
+        
+        .auth-btn-signup {
+            background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+        }
+        
+        .auth-btn-signup:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(155, 89, 182, 0.3);
+        }
+        
+        .auth-btn-guest {
+            background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+        }
+        
+        .auth-btn-guest:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(149, 165, 166, 0.3);
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .game-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .board-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .info-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .info-card {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .info-card h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .info-card p {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+            border: 2px solid #ddd;
+        }
+        
+        .btn-secondary:hover {
+            background: #e8e8e8;
+            border-color: #bbb;
+        }
+        
+        @media (max-width: 1000px) {
+            .game-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .navbar {
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+            
+            .navbar-nav {
+                gap: 12px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 12px;
+            }
+
+            .navbar {
+                padding: 12px 16px;
+                margin-bottom: 20px;
+            }
+
+            .navbar-logo {
+                font-size: 20px;
+            }
+
+            .navbar-nav {
+                gap: 8px;
+            }
+
+            .navbar a {
+                padding: 6px 10px;
+                font-size: 12px;
+            }
+
+            .navbar-right {
+                gap: 8px;
+            }
+
+            .auth-btn {
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .game-section {
+                gap: 20px;
+            }
+
+            .info-card {
+                padding: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 8px;
+            }
+
+            .navbar {
+                padding: 10px 12px;
+                margin-bottom: 15px;
+                gap: 8px;
+            }
+
+            .navbar-logo {
+                font-size: 18px;
+            }
+
+            .navbar-nav {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            .navbar a {
+                padding: 6px 8px;
+                font-size: 11px;
+            }
+
+            .navbar-right {
+                flex-wrap: wrap;
+                width: 100%;
+                gap: 6px;
+            }
+
+            .auth-btn {
+                padding: 6px 10px;
+                font-size: 11px;
+                flex: 1;
+                min-width: 80px;
+            }
+
+            .container {
+                padding: 15px;
+                border-radius: 15px;
+            }
+
+            h1 {
+                font-size: 20px;
+                margin-bottom: 20px;
+            }
+
+            .game-section {
+                gap: 15px;
+            }
+
+            .info-panel {
+                gap: 15px;
+            }
+
+            .info-card {
+                padding: 12px;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            button {
+                padding: 10px 16px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="index.html" class="navbar-logo">♔ ChessPoney</a>
+        <div class="navbar-nav">
+            <a href="index.html">🏠 Accueil</a>
+            <a href="play.html">🎮 Jouer</a>
+            <a href="exercises.html">📚 Exercices</a>
+            <a href="profile.html">👤 Profil</a>
+        </div>
+        <div class="navbar-right">
+            <button class="auth-btn auth-btn-login" onclick="openAuthModal('login')">🔐 Connexion</button>
+            <button class="auth-btn auth-btn-signup" onclick="openAuthModal('signup')">✨ Inscription</button>
+            <button class="auth-btn auth-btn-guest" onclick="playAsGuest()">👤 Invité</button>
+        </div>
+    </div>
+    
+    <div class="container">
+        <h1>🎮 Jouer aux Échecs</h1>
+        
+        <div class="game-section">
+            <div class="board-area">
+                <h2 style="color: #333; margin-bottom: 20px;">Échiquier</h2>
+                <div id="game-board" style="border: 3px solid #333; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); padding: 12px; display:flex; justify-content:center;">
+                    <!-- Conteneur pour l'échiquier créé par UIController -->
+                    <div id="chessboard" class="board"></div>
+                </div>
+            </div>
+            
+            <div class="info-panel">
+                <div class="info-card">
+                    <h3>👤 Joueur</h3>
+                    <p id="player-info">Blanc</p>
+                </div>
+                
+                <div class="info-card">
+                    <h3>📊 Statistiques</h3>
+                    <p>Coups: <strong id="move-count">0</strong></p>
+                    <p>Temps: <strong id="game-time">0s</strong></p>
+                </div>
+                
+                <div class="info-card">
+                    <h3>📝 Historique</h3>
+                    <div id="move-history" style="max-height: 200px; overflow-y: auto; background: white; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 12px; color: #666;">
+                        <!-- Mouvements -->
+                    </div>
+                </div>
+                
+                <div class="info-card">
+                    <h3>🎯 Quêtes Actives</h3>
+                    <div id="active-quests" style="font-size: 12px; max-height: 150px; overflow-y: auto;">
+                        <!-- Quêtes affichées par JavaScript -->
+                    </div>
+                </div>
+
+                <div class="info-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-left-color: white;">
+                    <h3 style="color: white;">🌐 Mode Multijoueur</h3>
+                    <p style="color: rgba(255,255,255,0.9); margin-bottom: 12px;">Jouez contre un ami en ligne!</p>
+                    <div class="controls" style="gap: 8px;">
+                        <button style="background: white; color: #667eea; font-weight: 600; padding: 8px 12px; font-size: 13px;" onclick="openCreateChallengeModal()">➕ Créer Défi</button>
+                        <button style="background: rgba(255,255,255,0.2); color: white; border: 2px solid white; padding: 8px 12px; font-size: 13px;" onclick="openJoinChallengeModal()">📥 Rejoindre</button>
+                    </div>
+                </div>
+                
+                <div class="controls">
+                    <button class="btn-primary" onclick="startNewGame()">🔄 Nouveau Jeu</button>
+                    <button class="btn-secondary" onclick="undoMove()">↶ Annuler</button>
+                    <button class="btn-secondary" onclick="resetGame()">🗑️ Réinitialiser</button>
+                    <button id="analysisToggle" class="btn-secondary" onclick="toggleAnalysis()">🔎 Analyse</button>
+                    <button id="copyPGNButton" class="btn-secondary" onclick="copyPGN()" style="background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%); color: white;">📋 PGN</button>
+                </div>
+                
+                <a href="index.html" style="text-align: center; color: #667eea; text-decoration: none; font-weight: 600;">← Retour à l'accueil</a>
+            </div>
+        </div>
+    </div>
+    
+    <script src="chess-engine.js"></script>
+    <script src="gamestate.js"></script>
+    <script src="ui-controller.js"></script>
+    <script src="profile-manager.js"></script>
+    <script src="quests.js"></script>
+    <script src="app.js"></script>
+    <script>
+        // mode d'analyse global (false = jeu normal)
+        window.analysisMode = false;
+
+        // Références globales pour compatibilité
+        window.appState = window.appState || null;
+
+        window.addEventListener('DOMContentLoaded', function() {
+            console.log('play.html loaded');
+
+            // Initialiser l'app si nécessaire
+            if (typeof ChessPoneyApp !== 'undefined' && (typeof app === 'undefined' || app === null)) {
+                window.app = new ChessPoneyApp();
+            }
+
+            // Afficher les quêtes actives
+            displayActiveQuests();
+
+            // Créer l'état de jeu et le contrôleur UI sur cette page si absent
+            try {
+                if (!window.appState) {
+                    window.appState = new GameState();
+                    const uiController = new UIController(window.appState);
+                    if (window.app) {
+                        window.app.gameState = window.appState;
+                        window.app.uiController = uiController;
+                    }
+                    // Exposer appState/UIController pour debug
+                    window.appUI = uiController;
+                    // Lancer une nouvelle partie locale
+                    window.appState.newGame();
+                }
+            } catch (err) {
+                console.error('Initialisation locale du jeu échouée', err);
+            }
+
+            // Lancer une partie via l'API de l'app
+            startNewGame();
+        });
+
+        function startNewGame() {
+            if (window.app) {
+                window.app.playNewGame();
+                if (window.app.uiController) {
+                    window.app.uiController.createBoard();
+                    window.app.uiController.updateDisplay();
+                }
+            } else if (window.appState) {
+                // fallback: restart local game state
+                window.appState.newGame();
+                if (window.appUI) {
+                    window.appUI.createBoard();
+                    window.appUI.updateDisplay();
+                }
+            }
+        }
+
+        function undoMove() {
+            if (window.app && window.app.gameState) {
+                window.app.gameState.undo();
+                if (window.app.uiController) {
+                    window.app.uiController.createBoard();
+                    window.app.uiController.updateDisplay();
+                }
+            } else if (window.appState) {
+                window.appState.undo();
+                if (window.appUI) {
+                    window.appUI.createBoard();
+                    window.appUI.updateDisplay();
+                }
+            }
+        }
+
+        function resetGame() {
+            if (confirm('Êtes-vous sûr?')) {
+                startNewGame();
+            }
+        }
+
+        function toggleAnalysis() {
+            window.analysisMode = !window.analysisMode;
+            const btn = document.getElementById('analysisToggle');
+            if (btn) btn.textContent = window.analysisMode ? '🔎 Analyse (ON)' : '🔎 Analyse';
+            if (window.app && window.app.uiController) {
+                window.app.uiController.clearHighlights();
+                window.app.uiController.updateDisplay();
+            } else if (window.appUI) {
+                window.appUI.clearHighlights();
+                window.appUI.updateDisplay();
+            }
+        }
+
+        // Afficher les quêtes actives du type 'play'
+        function displayActiveQuests() {
+            const container = document.getElementById('active-quests');
+            if (!container || typeof questManager === 'undefined') return;
+            
+            const playQuests = questManager.getQuestsByType('play');
+            const globalQuests = questManager.getQuestsByType('global');
+            const quests = [...playQuests, ...globalQuests];
+            
+            container.innerHTML = '';
+            
+            if (quests.length === 0) {
+                container.innerHTML = '<p style="color: #999;">Aucune quête active</p>';
+                return;
+            }
+            
+            quests.forEach(quest => {
+                if (!quest.completed) {
+                    const progress = Math.round((quest.progress / quest.target) * 100);
+                    const item = document.createElement('div');
+                    item.style.cssText = 'margin-bottom: 10px; padding: 8px; background: rgba(255,255,255,0.1); border-radius: 5px; border-left: 3px solid #3498db;';
+                    item.innerHTML = `
+                        <div style="font-weight: bold; color: #fff;">${quest.title}</div>
+                        <div style="font-size: 11px; color: #bbb; margin: 3px 0;">${quest.progress}/${quest.target} - ${progress}%</div>
+                        <div style="background: #222; height: 4px; border-radius: 2px; overflow: hidden;">
+                            <div style="background: linear-gradient(90deg, #3498db, #2980b9); height: 100%; width: ${progress}%;"></div>
+                        </div>
+                    `;
+                    container.appendChild(item);
+                }
+            });
+        }
+
+        // Mise à jour périodique de l'heure et des quêtes
+        setInterval(() => {
+            const gs = (window.app && window.app.gameState) ? window.app.gameState : window.appState;
+            if (gs && !gs.isGameOver) {
+                const elapsed = Math.floor((Date.now() - (gs.startTime || Date.now())) / 1000);
+                const el = document.getElementById('game-time');
+                if (el) el.textContent = elapsed + 's';
+            }
+            displayActiveQuests();
+        }, 1000);
+    </script>
+
+    <!-- MODAL CRÉER DÉFI EN LIGNE -->
+    <div id="createChallengeModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 1000; display: flex; align-items: center; justify-content: center;">
+        <div style="background: white; padding: 30px; border-radius: 15px; width: 90%; max-width: 400px; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
+            <h2 style="color: #333; margin-bottom: 20px; text-align: center;">🌐 Créer un Défi En Ligne</h2>
+            
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; color: #666; font-weight: 600; margin-bottom: 8px;">Votre nom:</label>
+                <input type="text" id="playerNameInput" placeholder="Entrez votre pseudo" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 14px; box-sizing: border-box;" />
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; color: #666; font-weight: 600; margin-bottom: 8px;">Couleur:</label>
+                <select id="playerColorInput" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 14px; box-sizing: border-box;">
+                    <option value="white">⚪ Blanc (1er à jouer)</option>
+                    <option value="black">⚫ Noir (2e à jouer)</option>
+                </select>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; color: #666; font-weight: 600; margin-bottom: 8px;">⏱️ Timing (minutes + secondes/coup):</label>
+                <select id="timingInput" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 14px; box-sizing: border-box;">
+                    <option value="1+1">1 min + 1 sec (Bullet)</option>
+                    <option value="2+1">2 min + 1 sec (Bullet+)</option>
+                    <option value="3+2" selected>3 min + 2 sec (Blitz) ⭐</option>
+                    <option value="5+3">5 min + 3 sec (Blitz rapide)</option>
+                    <option value="10+5">10 min + 5 sec (Rapide)</option>
+                    <option value="15+10">15 min + 10 sec (Rapide+)</option>
+                    <option value="30+20">30 min + 20 sec (Classique)</option>
+                    <option value="0+0">Illimité (Sans limite)</option>
+                </select>
+            </div>
+
+            <div style="background: #f0f0f0; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
+                <p style="color: #666; margin: 0; font-size: 14px;">Un <strong>code de défi</strong> sera généré que vous pourrez partager avec votre ami!</p>
+            </div>
+
+            <div style="display: flex; gap: 10px;">
+                <button onclick="createChallenge()" style="flex: 1; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px;">✅ Créer Défi</button>
+                <button onclick="closeCreateChallengeModal()" style="flex: 1; background: #f0f0f0; color: #333; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px;">❌ Fermer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL REJOINDRE DÉFI -->
+    <div id="joinChallengeModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 1000; display: flex; align-items: center; justify-content: center;">
+        <div style="background: white; padding: 30px; border-radius: 15px; width: 90%; max-width: 400px; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
+            <h2 style="color: #333; margin-bottom: 20px; text-align: center;">📥 Rejoindre un Défi</h2>
+            
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; color: #666; font-weight: 600; margin-bottom: 8px;">Votre nom:</label>
+                <input type="text" id="joinPlayerNameInput" placeholder="Entrez votre pseudo" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 14px; box-sizing: border-box;" />
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; color: #666; font-weight: 600; margin-bottom: 8px;">Code du Défi:</label>
+                <input type="text" id="challengeCodeInput" placeholder="ex: ABC123" maxlength="6" style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; box-sizing: border-box; text-transform: uppercase; letter-spacing: 2px; text-align: center;" />
+            </div>
+
+            <div style="background: #f0f0f0; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
+                <p style="color: #666; margin: 0; font-size: 14px;">Demandez le <strong>code à 6 caractères</strong> à votre ami!</p>
+            </div>
+
+            <div style="display: flex; gap: 10px;">
+                <button onclick="joinChallenge()" style="flex: 1; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px;">✅ Rejoindre</button>
+                <button onclick="closeJoinChallengeModal()" style="flex: 1; background: #f0f0f0; color: #333; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px;">❌ Fermer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL LIEN DE DÉFI GÉNÉRÉ -->
+    <div id="challengeLinkModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 1000; display: flex; align-items: center; justify-content: center;">
+        <div style="background: white; padding: 30px; border-radius: 15px; width: 90%; max-width: 450px; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
+            <h2 style="color: #333; margin-bottom: 20px; text-align: center;">🎉 Défi Créé!</h2>
+            
+            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; text-align: center;">
+                <p style="margin: 0 0 10px 0; font-size: 12px; opacity: 0.9;">Code du Défi:</p>
+                <p id="displayCode" style="margin: 0; font-size: 36px; font-weight: 700; letter-spacing: 3px; font-family: 'Courier New', monospace;">XXXXXX</p>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <p style="color: #666; margin: 0 0 10px 0; font-weight: 600;">Partagez ce lien avec votre ami:</p>
+                <input type="text" id="shareLink" readonly style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 12px; box-sizing: border-box; background: #f9f9f9; color: #666;" />
+                <button onclick="copyShareLink()" style="width: 100%; margin-top: 8px; background: #3498db; color: white; padding: 10px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px;">📋 Copier le Lien</button>
+            </div>
+
+            <div style="background: #f0f0f0; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                <p style="color: #666; margin: 0; font-size: 13px;"><strong>💡 Conseil:</strong> Votre ami peut rejoindre en entrant le code <strong id="shareCode">XXXXXX</strong> ou en cliquant sur le lien.</p>
+            </div>
+
+            <div style="display: flex; gap: 10px;">
+                <button onclick="closeChallengeLinkModal()" style="flex: 1; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px;">🎮 Commencer à Jouer</button>
+                <button onclick="closeChallengeFlow()" style="flex: 1; background: #f0f0f0; color: #333; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px;">🏠 Retour</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="online-challenge.js"></script>
+    <script>
+        // Initialiser le gestionnaire de défis en ligne
+        let onlineChallenge = new OnlineChallenge();
+
+        // Fonctions modales - Créer Défi
+        function openCreateChallengeModal() {
+            document.getElementById('createChallengeModal').style.display = 'flex';
+            document.getElementById('playerNameInput').focus();
+        }
+
+        function closeCreateChallengeModal() {
+            document.getElementById('createChallengeModal').style.display = 'none';
+            document.getElementById('playerNameInput').value = '';
+        }
+
+        function createChallenge() {
+            const playerName = document.getElementById('playerNameInput').value.trim();
+            const playerColor = document.getElementById('playerColorInput').value;
+            const timing = document.getElementById('timingInput').value;
+
+            if (!playerName) {
+                alert('⚠️ Veuillez entrer votre nom!');
+                return;
+            }
+
+            // Créer le défi avec timing
+            const challenge = onlineChallenge.createChallenge(playerName, playerColor, timing);
+            
+            // Afficher le lien
+            closeCreateChallengeModal();
+            showChallengeLinkModal(challenge.code, timing);
+        }
+
+        // Fonctions modales - Rejoindre Défi
+        function openJoinChallengeModal() {
+            document.getElementById('joinChallengeModal').style.display = 'flex';
+            document.getElementById('joinPlayerNameInput').focus();
+        }
+
+        function closeJoinChallengeModal() {
+            document.getElementById('joinChallengeModal').style.display = 'none';
+            document.getElementById('joinPlayerNameInput').value = '';
+            document.getElementById('challengeCodeInput').value = '';
+        }
+
+        function joinChallenge() {
+            const playerName = document.getElementById('joinPlayerNameInput').value.trim();
+            const challengeCode = document.getElementById('challengeCodeInput').value.toUpperCase().trim();
+
+            if (!playerName) {
+                alert('⚠️ Veuillez entrer votre nom!');
+                return;
+            }
+
+            if (!challengeCode || challengeCode.length !== 6) {
+                alert('⚠️ Veuillez entrer un code valide (6 caractères)!');
+                return;
+            }
+
+            const result = onlineChallenge.joinChallenge(challengeCode, playerName);
+
+            if (!result.success) {
+                alert('❌ ' + result.error);
+                return;
+            }
+
+            closeJoinChallengeModal();
+            
+            // Sauvegarder l'état du défi actif
+            sessionStorage.setItem('activeChallengeCode', challengeCode);
+            sessionStorage.setItem('currentPlayerName', playerName);
+            console.log('[MultiJoueur] Défi actif:', challengeCode);
+            
+            // Afficher le message sans recharger la page
+            showDéfiInfo(challengeCode, playerName);
+        }
+
+        // Afficher les infos du défi
+        function showDéfiInfo(code, playerName) {
+            const challenge = onlineChallenge.getChallenge(code);
+            if (!challenge) return;
+            
+            const players = Object.values(challenge.players).map(p => p.name).join(' vs ');
+            alert(`✅ Vous avez rejoint!\n\nDéfi: ${code}\nJoueurs: ${players}\n\nAmusez-vous bien! 🎮`);
+        }
+
+        // Fonctions modales - Afficher Lien
+        function showChallengeLinkModal(code, timing) {
+            document.getElementById('displayCode').textContent = code;
+            document.getElementById('shareCode').textContent = code;
+            const shareLink = onlineChallenge.getShareLink(code);
+            document.getElementById('shareLink').value = shareLink;
+            document.getElementById('challengeLinkModal').style.display = 'flex';
+            
+            // Ajouter le timing dans le lien
+            if (timing) {
+                let timingText = '';
+                if (timing === '3+2') timingText = ' (3min + 2sec) ⭐';
+                else if (timing === '1+1') timingText = ' (1min + 1sec)';
+                else if (timing === '5+3') timingText = ' (5min + 3sec)';
+                else if (timing === '10+5') timingText = ' (10min + 5sec)';
+                else if (timing !== '0+0') timingText = ` (${timing.replace('+', 'min + ')}sec)`;
+                
+                const timingDisplay = document.getElementById('timingDisplay');
+                if (timingDisplay) timingDisplay.textContent = timingText;
+                
+                // Mettre le timing dans le lien partagé
+                const linkElement = document.getElementById('shareLink');
+                if (linkElement) {
+                    linkElement.value = shareLink + '&timing=' + timing;
+                }
+            }
+            
+            // Sauvegarder l'état du défi actif
+            sessionStorage.setItem('activeChallengeCode', code);
+            sessionStorage.setItem('challengeTiming', timing || '3+2');
+            console.log('[MultiJoueur] Défi share link:', shareLink);
+        }
+
+        function closeChallengeLinkModal() {
+            document.getElementById('challengeLinkModal').style.display = 'none';
+        }
+
+        function closeChallengeFlow() {
+            document.getElementById('challengeLinkModal').style.display = 'none';
+            closeCreateChallengeModal();
+            closeJoinChallengeModal();
+        }
+
+        function copyShareLink() {
+            const linkInput = document.getElementById('shareLink');
+            linkInput.select();
+            document.execCommand('copy');
+            alert('✅ Lien copié dans le presse-papiers!');
+        }
+
+        // Générer le PGN de la partie
+        function generatePGN() {
+            const code = sessionStorage.getItem('activeChallengeCode');
+            if (!code) return '';
+            
+            const challenge = onlineChallenge.getChallenge(code);
+            if (!challenge) return '';
+            
+            const gameState = challenge.gameState;
+            const players = challenge.players;
+            const white = Object.values(players).find(p => p.color === 'white');
+            const black = Object.values(players).find(p => p.color === 'black');
+            
+            let pgn = '[Event "ChessPoney Online Challenge"]\n';
+            pgn += `[Site "ChessPoney"]\n`;
+            pgn += `[Date "${new Date().toISOString().split('T')[0]}"]\n`;
+            pgn += `[White "${white?.name || 'Blanc'}"]\n`;
+            pgn += `[Black "${black?.name || 'Noir'}"]\n`;
+            pgn += `[Result "${gameState.result || '*'}"]\n`;
+            pgn += `[Code "${code}"]\n`;
+            pgn += `[Timing "${sessionStorage.getItem('challengeTiming') || '3+2'}"]\n\n`;
+            
+            // Ajouter les coups
+            if (gameState.moves && gameState.moves.length > 0) {
+                for (let i = 0; i < gameState.moves.length; i++) {
+                    if (i % 2 === 0) {
+                        pgn += `${Math.floor(i / 2) + 1}. `;
+                    }
+                    pgn += gameState.moves[i] + ' ';
+                    if ((i + 1) % 2 === 0) pgn += '\n';
+                }
+            }
+            
+            pgn += '\n' + (gameState.result || '*');
+            return pgn;
+        }
+
+        // Copier le PGN
+        function copyPGN() {
+            const pgn = generatePGN();
+            if (!pgn) {
+                alert('❌ Pas de partie à copier');
+                return;
+            }
+            
+            navigator.clipboard.writeText(pgn).then(() => {
+                alert('✅ PGN copié au presse-papiers!');
+            }).catch(() => {
+                // Fallback pour anciens navigateurs
+                const textarea = document.createElement('textarea');
+                textarea.value = pgn;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                alert('✅ PGN copié au presse-papiers!');
+            });
+        }
+
+        // Afficher bouton PGN à la fin
+        function showPGNButton() {
+            const gameControlPanel = document.querySelector('.game-control-panel');
+            if (gameControlPanel && !document.getElementById('copyPGNButton')) {
+                const btn = document.createElement('button');
+                btn.id = 'copyPGNButton';
+                btn.textContent = '📋 Copier PGN';
+                btn.style.cssText = 'background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%); color: white; padding: 10px 16px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 13px; margin-left: 8px;';
+                btn.onclick = copyPGN;
+                gameControlPanel.appendChild(btn);
+            }
+        }
+
+        // Vérifier si on rejoint un défi depuis une URL
+        function checkChallengeInUrl() {
+            const code = onlineChallenge.getChallengeCodeFromUrl();
+            if (code) {
+                console.log('[MultiJoueur] Défi détecté dans l\'URL:', code);
+                // Afficher un prompt pour rejoindre
+                const playerName = prompt('Bienvenue! Entrez votre pseudo pour rejoindre le défi ' + code + ':');
+                if (playerName) {
+                    const result = onlineChallenge.joinChallenge(code, playerName);
+                    if (result.success) {
+                        alert('✅ Vous avez rejoint le défi!');
+                        sessionStorage.setItem('activeChallengeCode', code);
+                    }
+                }
+            }
+        }
+
+        // Vérifier l'URL au chargement
+        window.addEventListener('load', checkChallengeInUrl);
+
+        // Mettre à jour l'affichage du défi actif
+        onlineChallenge.subscribe((event, data) => {
+            if (event === 'moveRecorded') {
+                console.log('[MultiJoueur] Mouvement enregistré:', data);
+            } else if (event === 'playerJoined') {
+                console.log('[MultiJoueur] Joueur rejoint:', data.player.name);
+            }
+        });
+
+        // ========== SYNCHRONISATION TEMPS RÉEL ==========
+        // Polling: Recharger les défis toutes les 1 seconde
+        setInterval(() => {
+            const activeChallengeCode = sessionStorage.getItem('activeChallengeCode');
+            if (!activeChallengeCode) return;
+
+            // Recharger depuis localStorage
+            onlineChallenge.loadChallengesFromStorage();
+            
+            const challenge = onlineChallenge.getChallenge(activeChallengeCode);
+            if (challenge) {
+                updateChallengeDisplay(activeChallengeCode, challenge);
+            }
+        }, 1000); // Chaque 1 seconde
+
+        // Afficher les infos du défi actuel
+        function updateChallengeDisplay(code, challenge) {
+            const infoPanel = document.querySelector('.info-panel');
+            if (!infoPanel) return;
+
+            let défiSection = document.getElementById('activeChallengeInfo');
+            if (!défiSection) {
+                défiSection = document.createElement('div');
+                défiSection.id = 'activeChallengeInfo';
+                défiSection.style.cssText = 'background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px; border-radius: 10px; margin-bottom: 15px; border-left: 4px solid white;';
+                infoPanel.insertBefore(défiSection, infoPanel.firstChild);
+            }
+
+            const playersList = Object.values(challenge.players)
+                .map(p => `${p.name} (${p.color === 'white' ? '⚪' : '⚫'})`)
+                .join(' vs ');
+            const mouvements = challenge.gameState.moves.length;
+
+            défiSection.innerHTML = `
+                <h3 style="color: white; margin-bottom: 8px; margin-top: 0;">🎮 Défi Actif</h3>
+                <p style="color: rgba(255,255,255,0.95); margin: 4px 0; font-size: 13px;"><strong>Code:</strong> <span style="font-family: monospace; font-size: 14px; letter-spacing: 1px;">${code}</span></p>
+                <p style="color: rgba(255,255,255,0.95); margin: 4px 0; font-size: 13px;"><strong>Joueurs:</strong> ${playersList}</p>
+                <p style="color: rgba(255,255,255,0.95); margin: 4px 0; font-size: 13px;"><strong>Mouvements:</strong> ${mouvements}</p>
+                <p style="color: rgba(255,255,255,0.95); margin: 4px 0; font-size: 13px;"><strong>Status:</strong> ${challenge.gameState.gameStatus === 'active' ? '🎮 En cours' : challenge.gameState.gameStatus === 'waiting' ? '⏳ En attente' : '✅ Terminé'}</p>
+            `;
+        }
+    </script>
+    <script src="shared-auth.js"></script>
+</body>
+</html>

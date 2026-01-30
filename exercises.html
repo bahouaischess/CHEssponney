@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercices - ChessPoney</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75'>♟</text></svg>">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .navbar {
+            max-width: 1200px;
+            margin: 0 auto 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .navbar-logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .navbar-nav {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+        
+        .navbar a {
+            color: #bdc3c7;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            padding: 8px 12px;
+            border-radius: 6px;
+        }
+        
+        .navbar a:hover {
+            color: white;
+            background: rgba(52, 152, 219, 0.2);
+        }
+        
+        .navbar-right {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        
+        .auth-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+        }
+        
+        .auth-btn-login {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        }
+        
+        .auth-btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        }
+        
+        .auth-btn-signup {
+            background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+        }
+        
+        .auth-btn-signup:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(155, 89, 182, 0.3);
+        }
+        
+        .auth-btn-guest {
+            background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+        }
+        
+        .auth-btn-guest:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(149, 165, 166, 0.3);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 30px;
+        }
+        
+        .puzzle-info {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .puzzle-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333;
+        }
+        
+        .puzzle-description {
+            color: #666;
+            line-height: 1.6;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 10px;
+        }
+        
+        .puzzle-status {
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        .puzzle-status.completed {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .puzzle-status.in-progress {
+            background: #cfe2ff;
+            color: #084298;
+            border: 1px solid #b6d4fe;
+        }
+        
+        .board-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        #exercise-board {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .board {
+            display: grid;
+            grid-template-columns: repeat(8, 70px);
+            grid-template-rows: repeat(8, 70px);
+            gap: 0;
+            border: 3px solid #333;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            background: #8B7355;
+        }
+        
+        .square {
+            width: 70px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+        
+        .square.light {
+            background-color: #F0D9B5;
+        }
+        
+        .square.dark {
+            background-color: #B58863;
+        }
+        
+        .square:hover {
+            opacity: 0.8;
+        }
+        
+        .square.selected {
+            background-color: #BDD1F8 !important;
+            border: 2px solid #4A90E2;
+            box-shadow: inset 0 0 10px rgba(74, 144, 226, 0.5);
+        }
+        
+        .square.highlight {
+            background-color: #BACA44 !important;
+            border: 2px solid #F39C12;
+            box-shadow: inset 0 0 10px rgba(243, 156, 18, 0.3);
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        button {
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(245, 87, 108, 0.3);
+        }
+        
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+            border: 2px solid #ddd;
+        }
+        
+        .btn-secondary:hover {
+            background: #e8e8e8;
+            border-color: #bbb;
+        }
+        
+        .puzzle-list {
+            margin-top: 40px;
+            padding-top: 40px;
+            border-top: 2px solid #f0f0f0;
+        }
+        
+        .puzzle-list h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+        
+        .puzzle-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .puzzle-item {
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 10px;
+            border: 2px solid #f0f0f0;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .puzzle-item:hover {
+            border-color: #f5576c;
+            background: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(245, 87, 108, 0.2);
+        }
+        
+        .puzzle-item-name {
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .puzzle-item-difficulty {
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .puzzle-item-status {
+            font-size: 12px;
+            margin-top: 8px;
+            font-weight: 600;
+        }
+        
+        .puzzle-item.completed .puzzle-item-status {
+            color: #28a745;
+        }
+        
+        .puzzle-item.in-progress .puzzle-item-status {
+            color: #ffc107;
+        }
+        
+        @media (max-width: 900px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+            
+            .board {
+                max-width: 100%;
+            }
+
+            .navbar {
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+
+            .navbar-nav {
+                gap: 12px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 12px;
+            }
+
+            .navbar {
+                padding: 12px 16px;
+                margin-bottom: 20px;
+            }
+
+            .navbar-logo {
+                font-size: 20px;
+            }
+
+            .navbar-nav {
+                gap: 8px;
+            }
+
+            .navbar a {
+                padding: 6px 10px;
+                font-size: 12px;
+            }
+
+            .navbar-right {
+                gap: 8px;
+            }
+
+            .auth-btn {
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .content {
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 8px;
+            }
+
+            .navbar {
+                padding: 10px 12px;
+                margin-bottom: 15px;
+                gap: 8px;
+            }
+
+            .navbar-logo {
+                font-size: 18px;
+            }
+
+            .navbar-nav {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            .navbar a {
+                padding: 6px 8px;
+                font-size: 11px;
+            }
+
+            .navbar-right {
+                flex-wrap: wrap;
+                width: 100%;
+                gap: 6px;
+            }
+
+            .auth-btn {
+                padding: 6px 10px;
+                font-size: 11px;
+                flex: 1;
+                min-width: 80px;
+            }
+
+            .container {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+
+            .content {
+                gap: 15px;
+            }
+
+            .puzzle-title {
+                font-size: 18px;
+            }
+
+            .board {
+                max-width: 100%;
+            }
+
+            .puzzle-grid {
+                grid-template-columns: 1fr;
+            }
+
+            button {
+                padding: 10px 16px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="index.html" class="navbar-logo">♔ ChessPoney</a>
+        <div class="navbar-nav">
+            <a href="index.html">🏠 Accueil</a>
+            <a href="play.html">🎮 Jouer</a>
+            <a href="exercises.html">📚 Exercices</a>
+            <a href="profile.html">👤 Profil</a>
+        </div>
+        <div class="navbar-right">
+            <button class="auth-btn auth-btn-login" onclick="openAuthModal('login')">🔐 Connexion</button>
+            <button class="auth-btn auth-btn-signup" onclick="openAuthModal('signup')">✨ Inscription</button>
+            <button class="auth-btn auth-btn-guest" onclick="playAsGuest()">👤 Invité</button>
+        </div>
+    </div>
+    
+    <div class="container">
+        <h1>📚 Exercices d'Échecs</h1>
+        
+        <div class="content">
+            <div class="puzzle-info">
+                <div class="puzzle-title" id="puzzle-title">Chargement...</div>
+                <div class="puzzle-description" id="puzzle-description">Attendre que l'exercice se charge</div>
+                <div id="puzzle-hint" style="margin-top: 12px; padding: 12px; background: #e8f4f8; border-left: 4px solid #3498db; border-radius: 4px; font-size: 14px; color: #555; display: none;">
+                    💡 <span id="hint-text"></span>
+                </div>
+                <div class="puzzle-status" id="puzzle-status">○ En cours...</div>
+                <div class="controls">
+                    <button class="btn-secondary" onclick="toggleHint()">💡 Indice</button>
+                    <button class="btn-secondary" onclick="revealSolution()">🔓 Voir Solution</button>
+                    <button class="btn-secondary" onclick="nextPuzzle()">→ Suivant</button>
+                </div>
+                
+                <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #ddd;">
+                    <h3 style="color: #333; margin-bottom: 10px;">🎯 Quêtes Actives</h3>
+                    <div id="active-quests-exercises" style="font-size: 12px;">
+                        <!-- Quêtes affichées par JavaScript -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="board-container">
+                <div id="exercise-board" style="display: flex; align-items: center; justify-content: center;">
+                    <!-- Échiquier généré par JavaScript -->
+                </div>
+            </div>
+        </div>
+        
+        <div class="puzzle-list">
+            <h2>📋 Liste des Puzzles</h2>
+            <div class="puzzle-grid" id="puzzle-list">
+                <!-- Puzzles générés par JavaScript -->
+            </div>
+        </div>
+    </div>
+    
+    <script src="chess-engine.js"></script>
+    <script src="gamestate.js"></script>
+    <script src="ui-controller.js"></script>
+    <script src="profile-manager.js"></script>
+    <script src="quests.js"></script>
+    <script src="shared-auth.js"></script>
+    <script>
+        // ============== EXERCICES INTERACTIFS AVEC CHESSPONEY ==============
+        // Données des exercices au format complet avec validation ChessGame
+        
+        const EXERCISES_DB = [
+            {
+                id: 1,
+                title: '♔ Mat en 1 avec ChessPoney',
+                difficulty: 'Facile',
+                description: 'Les Blancs jouent et font mat en 1. Rappel : toutes les pièces sauf le pion et le roi ont aussi les mouvements du cavalier!',
+                hint: 'Le fou blanc en g5 peut atteindre f6 grâce aux mouvements du cavalier, créant un mat.',
+                fen: '7k/8/8/6B1/8/8/8/K7 w - - 0 1',
+                expectedMate: true,
+                xpReward: 50,
+                solution: 'Bf6'
+            },
+            {
+                id: 2,
+                title: '♕ Mat en 1 avec la Dame',
+                difficulty: 'Facile',
+                description: 'Les Blancs jouent et font mat en 1 avec la dame.',
+                hint: 'La dame blanche en d5 peut atteindre f7, créant un mat.',
+                fen: '7k/8/8/3Q4/8/8/8/K7 w - - 0 1',
+                expectedMate: true,
+                xpReward: 50,
+                solution: 'Qf7'
+            }
+        ];
+        
+        let currentExerciseIdx = 0;
+        let gameState = null;
+        let uiController = null;
+        
+        function initializeExercise() {
+            const exercise = EXERCISES_DB[currentExerciseIdx];
+            
+            // Mettre à jour les infos
+            document.getElementById('puzzle-title').textContent = exercise.title;
+            document.getElementById('puzzle-description').textContent = exercise.description;
+            document.getElementById('hint-text').textContent = exercise.hint;
+            document.getElementById('puzzle-hint').style.display = 'none';
+            document.getElementById('puzzle-status').textContent = '○ En cours...';
+            
+            // Charger la position FEN
+            loadExercisePosition(exercise.fen);
+            
+            // Recréer le plateau avec UIController
+            if (!uiController) {
+                // Créer un conteneur du plateau s'il n'existe pas
+                if (!document.getElementById('chessboard')) {
+                    document.getElementById('exercise-board').innerHTML = '<div id="chessboard" class="board"></div>';
+                }
+                uiController = new UIController(gameState);
+            } else {
+                uiController.state = gameState;
+                uiController.createBoard();
+                uiController.updateDisplay();
+            }
+            
+            // Afficher la liste des exercices
+            renderExerciseList();
+            
+            // Afficher les quêtes actives
+            displayActiveQuests();
+        }
+        
+        function loadExercisePosition(fen) {
+            // Créer un nouveau GameState avec la position FEN
+            gameState = new GameState();
+            
+            // Parser le FEN et charger la position
+            const parts = fen.split(' ');
+            const boardStr = parts[0];
+            const playerStr = parts[1];
+            
+            gameState.game.board = Array(8).fill(null).map(() => Array(8).fill(null));
+            gameState.game.currentPlayer = playerStr === 'w' ? 'white' : 'black';
+            
+            const ranks = boardStr.split('/');
+            for (let r = 0; r < 8; r++) {
+                let c = 0;
+                for (let ch of ranks[r]) {
+                    if (/\d/.test(ch)) {
+                        c += parseInt(ch);
+                    } else {
+                        const color = ch === ch.toUpperCase() ? 'white' : 'black';
+                        const typeMap = {
+                            'K': 'king', 'Q': 'queen', 'R': 'rook', 'B': 'bishop', 'N': 'knight', 'P': 'pawn',
+                            'k': 'king', 'q': 'queen', 'r': 'rook', 'b': 'bishop', 'n': 'knight', 'p': 'pawn'
+                        };
+                        gameState.game.board[r][c] = { type: typeMap[ch], color };
+                        c++;
+                    }
+                }
+            }
+            
+            // Recalculer les coups valides
+            gameState.validMoves = gameState.game.getPossibleMoves(0, 0);
+            gameState.clearSelection();
+        }
+        
+        function checkIfSolved() {
+            const exercise = EXERCISES_DB[currentExerciseIdx];
+            const statusEl = document.getElementById('puzzle-status');
+            
+            if (!exercise || !exercise.expectedMate) {
+                return;
+            }
+            
+            // Vérifier le mat
+            const isCheckmate = gameState.game.isInCheck(gameState.game.currentPlayer === 'white' ? 'black' : 'white') &&
+                               !hasAvailableMoves(gameState.game.currentPlayer === 'white' ? 'black' : 'white');
+            
+            if (!isCheckmate) {
+                return;
+            }
+            
+            // EXERCICE RÉSOLU!
+            console.log('Exercice résolu:', exercise.title);
+            
+            // Afficher message
+            statusEl.textContent = '✓ Mat trouvé! +' + exercise.xpReward + 'XP';
+            statusEl.style.color = '#2ecc71';
+            
+            // === ÉTAPE 1: Ajouter XP au profil ===
+            if (typeof ProfileManager !== 'undefined') {
+                const pm = new ProfileManager();
+                const profile = pm.loadProfile();
+                if (profile) {
+                    profile.stats = profile.stats || {};
+                    profile.stats.xp = (profile.stats.xp || 0) + exercise.xpReward;
+                    profile.level = Math.floor(profile.stats.xp / 100) + 1;
+                    pm.saveProfile(profile);
+                    console.log('Profil mis à jour - XP:', profile.stats.xp, 'Level:', profile.level);
+                }
+            }
+            
+            // === ÉTAPE 2: Mettre à jour les quêtes ===
+            if (typeof questManager !== 'undefined') {
+                console.log('Avant triggerEvent - solve_puzzle');
+                questManager.triggerEvent('solve_puzzle', { exerciseDifficulty: exercise.difficulty });
+                questManager.saveQuests();
+                console.log('Quêtes sauvegardées');
+            }
+            
+            // === ÉTAPE 3: Mettre à jour l'affichage ===
+            displayActiveQuests();
+            
+            // === ÉTAPE 4: Auto-avancer ===
+            setTimeout(() => {
+                nextPuzzle();
+            }, 2000);
+        }
+        
+        function hasAvailableMoves(color) {
+            for (let r = 0; r < 8; r++) {
+                for (let c = 0; c < 8; c++) {
+                    const piece = gameState.game.board[r][c];
+                    if (piece && piece.color === color) {
+                        const moves = gameState.game.getPossibleMoves(r, c);
+                        if (moves.length > 0) return true;
+                    }
+                }
+            }
+            return false;
+        }
+        
+        function renderExerciseList() {
+            const list = document.getElementById('puzzle-list');
+            list.innerHTML = '';
+            
+            EXERCISES_DB.forEach((exercise, idx) => {
+                const item = document.createElement('div');
+                item.className = 'puzzle-item' + (idx === currentExerciseIdx ? ' active' : '');
+                item.style.borderColor = idx === currentExerciseIdx ? '#f5576c' : '#f0f0f0';
+                item.style.background = idx === currentExerciseIdx ? '#fff' : '#f9f9f9';
+                
+                item.innerHTML = `
+                    <div class="puzzle-item-name">${exercise.title}</div>
+                    <div class="puzzle-item-difficulty">${exercise.difficulty} - ${exercise.xpReward}XP</div>
+                `;
+                
+                item.onclick = () => {
+                    currentExerciseIdx = idx;
+                    initializeExercise();
+                };
+                
+                list.appendChild(item);
+            });
+        }
+        
+        function displayActiveQuests() {
+            const container = document.getElementById('active-quests-exercises');
+            if (!container) return;
+            
+            // Recharger les quêtes depuis le stockage
+            if (typeof questManager === 'undefined') {
+                console.warn('questManager not defined');
+                return;
+            }
+            
+            // Recharger depuis stockage
+            questManager.loadQuests();
+            
+            const exerciseQuests = questManager.getQuestsByType('exercise') || [];
+            const globalQuests = questManager.getQuestsByType('global') || [];
+            const quests = [...exerciseQuests, ...globalQuests];
+            
+            container.innerHTML = '';
+            
+            if (quests.length === 0) {
+                container.innerHTML = '<p style="color: #999;">Aucune quête active</p>';
+                return;
+            }
+            
+            let activeCount = 0;
+            quests.forEach(quest => {
+                if (!quest.completed) {
+                    activeCount++;
+                    const progress = Math.round((quest.progress / quest.target) * 100);
+                    const item = document.createElement('div');
+                    item.style.cssText = 'margin-bottom: 10px; padding: 10px; background: rgba(240,217,181,0.15); border-radius: 6px; border-left: 4px solid #f5576c;';
+                    item.innerHTML = `
+                        <div style="font-weight: 600; color: #333; font-size: 13px;">${quest.title}</div>
+                        <div style="font-size: 12px; color: #666; margin: 4px 0;">Progression: ${quest.progress}/${quest.target}</div>
+                        <div style="background: #ddd; height: 5px; border-radius: 3px; overflow: hidden; margin-top: 4px;">
+                            <div style="background: linear-gradient(90deg, #f5576c, #f093fb); height: 100%; width: ${progress}%; transition: width 0.3s;"></div>
+                        </div>
+                    `;
+                    container.appendChild(item);
+                }
+            });
+            
+            if (activeCount === 0) {
+                container.innerHTML = '<p style="color: #999;">Toutes les quêtes complétées!</p>';
+            }
+        }
+        
+        function revealSolution() {
+            const exercise = EXERCISES_DB[currentExerciseIdx];
+            document.getElementById('puzzle-status').textContent = `� Solution: ${exercise.solution}`;
+        }
+        
+        function toggleHint() {
+            const hintEl = document.getElementById('puzzle-hint');
+            hintEl.style.display = hintEl.style.display === 'none' ? 'block' : 'none';
+        }
+        
+        function nextPuzzle() {
+            currentExerciseIdx = (currentExerciseIdx + 1) % EXERCISES_DB.length;
+            initializeExercise();
+        }
+        
+        // Initialiser au chargement
+        window.addEventListener('DOMContentLoaded', function() {
+            console.log('Exercices interactifs chargés avec GameState+UIController');
+            initializeExercise();
+            
+            // Mettre à jour les quêtes toutes les secondes
+            setInterval(() => {
+                displayActiveQuests();
+            }, 1000);
+            
+            // Hook dans makeMove pour vérifier si exercice résolu
+            const originalMakeMove = GameState.prototype.makeMove;
+            GameState.prototype.makeMove = function(fromRow, fromCol, toRow, toCol) {
+                const result = originalMakeMove.call(this, fromRow, fromCol, toRow, toCol);
+                setTimeout(() => checkIfSolved(), 100);
+                return result;
+            };
+        });
+    </script>
+    <script src="shared-auth.js"></script>
+</body>
+</html>

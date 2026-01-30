@@ -1,0 +1,23 @@
+{
+  "name": "chessponey",
+  "version": "1.0.0",
+  "description": "Variante d'échecs innovante où toutes les pièces (sauf Roi et Pions) ont le mouvement du Cavalier",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8000 || python3 -m http.server 8000",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "chess",
+    "échecs",
+    "game",
+    "jeu",
+    "variant",
+    "variante"
+  ],
+  "author": "Chessponey",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
